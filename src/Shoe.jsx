@@ -11,7 +11,7 @@ export function Model({shoe}) {
   const { nodes, materials } = useGLTF('/shoe.gltf')
   return (
     <group ref= {group} dispose={null} scale = {3}>
-      <mesh geometry={nodes.shoe.geometry} material={materials.laces} material-color ={shoe.laces}/>
+      <mesh geometry={nodes.shoe.geometry} material={materials.laces} material-color ={shoe.laces} />
       <mesh geometry={nodes.shoe_1.geometry} material={materials.mesh}  material-color = {shoe.mesh}/>
       <mesh geometry={nodes.shoe_2.geometry} material={materials.caps} material-color = {shoe.caps} />
       <mesh geometry={nodes.shoe_3.geometry} material={materials.inner} material-color = {shoe.inner} />

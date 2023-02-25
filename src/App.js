@@ -5,53 +5,73 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Model } from './Shoe';
 import styled from 'styled-components';
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 
-function ColorButton({ color, setColor, prevColor }) {
+function ColorButton({ color, useColor }) {
+  const [prevColor, setColor] = useColor
+
   return (
-    <div style={{fontSize:12,width:50,textAlign:'center'}}>
-      <button style={{
-        backgroundColor: color,
-        borderRadius: 30,
-        width: 30,
-        aspectRatio: 1
-      }} onClick={() => setColor(color)} />
-      {prevColor === color && <p>{color}</p>}
+    <div style={{ fontSize: 12, width: 50, textAlign: 'center' }}>
+      <button
+        style={{
+          backgroundColor: color,
+          borderRadius: 30,
+          width: 30,
+          aspectRatio: 1,
+          cursor: 'pointer',
+          border: 'none',
+          marginBottom: 10,
+          outline: prevColor === color ? '2px solid black' : 'none',
+        }}
+        onClick={() => setColor(color)}
+      />
+      {prevColor === color && <p>{capitalizeFirstLetter(color)}</p>}
     </div>
-  );
+  )
 }
 
-const MaterialButton = ({ material, setMaterial, prevMaterial }) => {
-  const borderColor = material === prevMaterial ? 'lightgray' : 'black';
+
+const MaterialButton = ({ material, useMaterial }) => {
+  const [prevMaterial, setMaterial] = useMaterial
   return (
     <button style={{
       borderRadius: 20,
-      borderColor: borderColor,
-      borderWidth:1,
       width: 150,
       textAlign: 'center',
       background: 'white',
-      paddingLeft:10,
-      paddingRight:10,
-      paddingTop:5,
-      paddingBottom:5,
-      fontSize:16,
-      fontWeight:'bold'
-    }} onClick={() => setMaterial(material)} >
-      <p>{material}</p>
+      paddingLeft: 10,
+      paddingRight: 10,
+      paddingTop: 7.5,
+      paddingBottom: 7.5,
+      fontSize: 16,
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      border: 'none',
+      outline: material === prevMaterial ? '1px solid black' : '1px solid lightgray',
+    }} onClick={() => setMaterial(material)}>
+      <p>{capitalizeFirstLetter(material)}</p>
     </button>
   )
 }
 
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+
+
 function App() {
   const ref = useRef()
-  const [lacesColor, setLacesColor] = useState('white');
+  const [active, setActive] = useState(0)
+  const [lacesColor, setLacesColor] = useState('blue');
   const [meshColor, setMeshColor] = useState('blue');
-  const [capsColor, setCapsColor] = useState('black');
+  const [capsColor, setCapsColor] = useState('blue');
   const [innerColor, setInnerColor] = useState('blue');
   const [soleColor, setSoleColor] = useState('blue');
-  const [stripesColor, setStripesColor] = useState('white');
-  const [bandColor, setBandColor] = useState('black');
+  const [stripesColor, setStripesColor] = useState('blue');
+  const [bandColor, setBandColor] = useState('blue');
   const [patchColor, setPatchColor] = useState('blue');
 
   const [lacesMaterial, setLacesMaterial] = useState('leather');
@@ -73,22 +93,90 @@ function App() {
     "band": bandColor,
     "patch": patchColor
   }
-  const colors = [
-    "red",
-    "blue",
-    "green",
-    "orange",
-    "yellow",
-    "purple",
-    "black",
-    "white"
+  const colors = {
+    "leather": ["red", "blue", "green", "orange", "yellow", "purple"],
+    "polyester": ["red", "blue", "yellow", "purple"],
+    "rubber": ["black", "lightgrey"]
+  };
+  
+  const parts = [
+    "laces",
+    "mesh",
+    "caps",
+    "inner",
+    "sole",
+    "stripes",
+    "band",
+    "patch"
   ]
 
-  const materials = [
-    "leather",
-    "polyester",
-    "rubber"
-  ]
+  const options = {
+    "laces": {
+      "materials": [],
+      "color-hook": [lacesColor, setLacesColor],
+      "material-hook": [lacesMaterial, setLacesMaterial]
+    },
+    "mesh": {
+      "materials": [
+        "leather",
+        "polyester",
+        "rubber"],
+      "color-hook": [meshColor, setMeshColor],
+      "material-hook": [meshMaterial, setMeshMaterial]
+    },
+    "caps": {
+      "materials": [
+        "leather",
+        "polyester",
+        "rubber"],
+      "color-hook": [capsColor, setCapsColor],
+      "material-hook": [capsMaterial, setCapsMaterial]
+    },
+    "inner": {
+      "materials": [],
+      "color-hook": [innerColor, setInnerColor],
+      "material-hook": [innerMaterial, setInnerMaterial]
+    },
+    "sole": {
+      "materials": [
+        "leather",
+        "polyester",
+        "rubber"],
+      "color-hook": [soleColor, setSoleColor],
+      "material-hook": [soleMaterial, setSoleMaterial]
+    },
+    "stripes": {
+      "materials": [],
+      "color-hook": [stripesColor, setStripesColor],
+      "material-hook": [stripesMaterial, setStripesMaterial]
+    },
+    "band": {
+      "materials": ["leather",
+        "polyester",
+        "rubber"],
+      "color-hook": [bandColor, setBandColor],
+      "material-hook": [bandMaterial, setBandMaterial]
+    },
+    "patch": {
+      "materials": [],
+      "color-hook": [patchColor, setPatchColor],
+      "material-hook": [patchMaterial, setPatchMaterial]
+    }
+
+  }
+
+
+  const item = options[parts[active]]
+  const matColors = colors[item["material-hook"][0]]
+
+  function handleArrowClick(direction) {
+    if (direction === 'left' && active > 0) {
+      setActive(active - 1);
+    } else if (direction === 'right' && active < parts.length - 1) {
+      setActive(active + 1);
+    }
+  }
+
   return (
     <Wrapper>
       <ProductCanvas>
@@ -108,16 +196,24 @@ function App() {
         </Canvas>
       </ProductCanvas>
       <Customization>
-        <h1> Laces </h1>
+        <PartSelector>
+          <MdOutlineKeyboardArrowLeft size={25} style={{cursor:'pointer'}} onClick={() => handleArrowClick('left')}>←</MdOutlineKeyboardArrowLeft>
+          <HeaderWrapper>
+            <h3>  
+              {capitalizeFirstLetter(parts[active])}
+            </h3>
+          </HeaderWrapper>
+          <MdOutlineKeyboardArrowRight size={25} style={{cursor:'pointer'}} onClick={() => handleArrowClick('right')}>→</MdOutlineKeyboardArrowRight>
+        </PartSelector>
         <CustomizationOptions>
           <MaterialOptions>
-            {materials.map((material) =>
-              <MaterialButton material={material} setMaterial={setLacesMaterial} prevMaterial={lacesMaterial} />
+            {item["materials"].map((material) =>
+              <MaterialButton material={material} useMaterial={item["material-hook"]} />
             )}
           </MaterialOptions>
           <ColorOptions>
-            {colors.map((color) =>
-              <ColorButton color={color} setColor={setLacesColor} prevColor={lacesColor} />
+            {matColors.map((color) =>
+              <ColorButton color={color} useColor={item["color-hook"]} />
             )}
           </ColorOptions>
         </CustomizationOptions>
@@ -128,7 +224,7 @@ function App() {
 
 const ProductCanvas = styled.div`
   width: 100vw;
-  height: 75vh;
+  height: 71.5vh;
   background:whitesmoke;
 `
 
@@ -141,6 +237,10 @@ const Wrapper = styled.div`
 const Customization = styled.div` 
   text-align: center;
   padding: 10px;
+`
+const HeaderWrapper = styled.div`
+  width: 200px;
+  font-size: 20;
 `
 const CustomizationOptions = styled.div`
   
@@ -159,6 +259,15 @@ const ColorOptions = styled.div`
   flex-direction:row;
   justify-content: center;
   gap: 40px;
+`
+const PartSelector = styled.div`
+  display:flex;
+  flex-direction:row;
+  width: 400px;
+  justify-content: space-evenly;
+  margin: auto;
+  padding-top: 20px;
+  padding-bottom: 10px;
 `
 
 
