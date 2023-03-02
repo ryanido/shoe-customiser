@@ -1,6 +1,6 @@
 import './App.css';
 import './fonts.css'
-import { Suspense, useRef, useState } from 'react'
+import { Suspense, useRef, useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Model } from './Shoe';
@@ -11,6 +11,12 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 function ColorButton({ color, useColor }) {
   const [prevColor, setColor] = useColor
+  const [isShown, setIsShown] = useState(false);
+
+  useEffect(() => {
+    setIsShown(true);
+  }, []);
+
 
   return (
     <div style={{ fontSize: 12, width: 50, textAlign: 'center' }}>
@@ -29,30 +35,46 @@ function ColorButton({ color, useColor }) {
       />
       {prevColor === color && <p>{capitalizeFirstLetter(color)}</p>}
     </div>
+
   )
 }
 
 
 const MaterialButton = ({ material, useMaterial }) => {
   const [prevMaterial, setMaterial] = useMaterial
+  const [isShown, setIsShown] = useState(false);
+
+  useEffect(() => {
+    setIsShown(true);
+  }, []);
+
   return (
-    <button style={{
-      borderRadius: 20,
-      width: 150,
-      textAlign: 'center',
-      background: 'white',
-      paddingLeft: 10,
-      paddingRight: 10,
-      paddingTop: 7.5,
-      paddingBottom: 7.5,
-      fontSize: 16,
-      fontWeight: 'bold',
-      cursor: 'pointer',
-      border: 'none',
-      outline: material === prevMaterial ? '1px solid black' : '1px solid lightgray',
-    }} onClick={() => setMaterial(material)}>
-      <p>{capitalizeFirstLetter(material)}</p>
-    </button>
+    <CSSTransition
+      in={isShown}
+      timeout={300}
+      classNames="slide"
+      unmountOnExit
+    >
+      <button style={{
+        borderRadius: 20,
+        width: 150,
+        textAlign: 'center',
+        background: 'white',
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 7.5,
+        paddingBottom: 7.5,
+        fontSize: 16,
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        border: 'none',
+        outline: material === prevMaterial ? '1px solid black' : '1px solid lightgray',
+      }} onClick={() => {
+        setMaterial(material)
+      }}>
+        <p>{capitalizeFirstLetter(material)}</p>
+      </button>
+    </CSSTransition>
   )
 }
 
@@ -98,7 +120,7 @@ function App() {
     "polyester": ["red", "blue", "yellow", "purple"],
     "rubber": ["black", "lightgrey"]
   };
-  
+
   const parts = [
     "laces",
     "mesh",
@@ -170,10 +192,12 @@ function App() {
   const matColors = colors[item["material-hook"][0]]
 
   function handleArrowClick(direction) {
-    if (direction === 'left' && active > 0) {
-      setActive(active - 1);
-    } else if (direction === 'right' && active < parts.length - 1) {
-      setActive(active + 1);
+    if (direction === 'left') {
+      if (active == 0) setActive(8)
+      else setActive(active - 1);
+    } else if (direction === 'right') {
+      if (active == parts.length - 1) setActive(0)
+      else setActive(active + 1);
     }
   }
 
@@ -187,7 +211,7 @@ function App() {
               angle={0.1}
               penumbra={1}
               position={[10, 15, 10]} castShadow />
-            <Model shoe={shoe} />
+            <Model shoe={shoe} setActive={setActive} />
             <OrbitControls
               enablePan={true}
               enableZoom={true}
@@ -197,13 +221,13 @@ function App() {
       </ProductCanvas>
       <Customization>
         <PartSelector>
-          <MdOutlineKeyboardArrowLeft size={25} style={{cursor:'pointer'}} onClick={() => handleArrowClick('left')}>←</MdOutlineKeyboardArrowLeft>
+          <MdOutlineKeyboardArrowLeft size={25} style={{ cursor: 'pointer' }} onClick={() => handleArrowClick('left')}>←</MdOutlineKeyboardArrowLeft>
           <HeaderWrapper>
-            <h3>  
+            <h3>
               {capitalizeFirstLetter(parts[active])}
             </h3>
           </HeaderWrapper>
-          <MdOutlineKeyboardArrowRight size={25} style={{cursor:'pointer'}} onClick={() => handleArrowClick('right')}>→</MdOutlineKeyboardArrowRight>
+          <MdOutlineKeyboardArrowRight size={25} style={{ cursor: 'pointer' }} onClick={() => handleArrowClick('right')}>→</MdOutlineKeyboardArrowRight>
         </PartSelector>
         <CustomizationOptions>
           <MaterialOptions>

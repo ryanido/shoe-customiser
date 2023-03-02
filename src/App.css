@@ -1,46 +1,24 @@
-*{
+* {
   margin: 0;
   padding: 0;
 }
-.options-enter {
+/* .slide-enter {
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateY(70%);
 }
 
-.options-enter-active {
-  opacity: 1;
-  transform: translateX(0%);
-  transition: all 300ms ease-in-out;
-}
-
-.options-exit {
-  opacity: 1;
-  transform: translateX(0%);
-}
-
-.options-exit-active {
-  opacity: 0;
-  transform: translateX(100%);
-  transition: all 300ms ease-in-out;
-}
-.header-wrapper-enter {
-  opacity: 0;
-  transform: translateY(-100%);
-}
-
-.header-wrapper-enter-active {
+.slide-enter-active {
   opacity: 1;
   transform: translateY(0%);
-  transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in;
 }
 
-.header-wrapper-exit {
-  opacity: 1;
-  transform: translateY(0%);
+.slide-exit {
+  transform: translateX(0%);
 }
 
-.header-wrapper-exit-active {
-  opacity: 0;
-  transform: translateY(-100%);
-  transition: all 300ms ease-in-out;
-}
+.slide-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-out;
+} */
+
