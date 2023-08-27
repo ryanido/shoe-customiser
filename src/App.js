@@ -6,7 +6,7 @@ import { OrbitControls } from '@react-three/drei';
 import { Model } from './Shoe';
 import styled from 'styled-components';
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 
 
 function ColorButton({ color, useColor }) {
@@ -69,7 +69,9 @@ const MaterialButton = ({ material, useMaterial }) => {
         cursor: 'pointer',
         border: 'none',
         outline: material === prevMaterial ? '1px solid black' : '1px solid lightgray',
-      }} onClick={() => {
+      }} 
+      id='material-button'
+      onClick={() => {
         setMaterial(material)
       }}>
         <p>{capitalizeFirstLetter(material)}</p>
@@ -202,7 +204,7 @@ function App() {
   }
 
   return (
-    <Wrapper>
+    <Wrapper data-testid="app">
       <ProductCanvas>
         <Canvas>
           <Suspense fallback={null}>
@@ -211,7 +213,7 @@ function App() {
               angle={0.1}
               penumbra={1}
               position={[10, 15, 10]} castShadow />
-            <Model shoe={shoe} setActive={setActive} />
+            <Model shoe={shoe} setActive={setActive}/>
             <OrbitControls
               enablePan={true}
               enableZoom={true}
@@ -221,13 +223,13 @@ function App() {
       </ProductCanvas>
       <Customization>
         <PartSelector>
-          <MdOutlineKeyboardArrowLeft size={25} style={{ cursor: 'pointer' }} onClick={() => handleArrowClick('left')}>←</MdOutlineKeyboardArrowLeft>
+          <MdOutlineKeyboardArrowLeft size={25} style={{ cursor: 'pointer' }} onClick={() => handleArrowClick('left')} data-testid="left-arrow"/>
           <HeaderWrapper>
             <h3>
               {capitalizeFirstLetter(parts[active])}
             </h3>
           </HeaderWrapper>
-          <MdOutlineKeyboardArrowRight size={25} style={{ cursor: 'pointer' }} onClick={() => handleArrowClick('right')}>→</MdOutlineKeyboardArrowRight>
+          <MdOutlineKeyboardArrowRight size={25} style={{ cursor: 'pointer' }} onClick={() => handleArrowClick('right')} data-testid="right-arrow"/>
         </PartSelector>
         <CustomizationOptions>
           <MaterialOptions>
@@ -237,7 +239,7 @@ function App() {
           </MaterialOptions>
           <ColorOptions>
             {matColors.map((color) =>
-              <ColorButton color={color} useColor={item["color-hook"]} />
+              <ColorButton color={color} useColor={item["color-hook"]} data-testid={color}/>
             )}
           </ColorOptions>
         </CustomizationOptions>
@@ -257,6 +259,8 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   font-family:Montseratt;
+  margin: 0;
+  padding: 0;
 `
 const Customization = styled.div` 
   text-align: center;

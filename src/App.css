@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
 }
+
 /* .slide-enter {
   opacity: 0;
   transform: translateY(70%);
@@ -21,4 +22,3 @@
   transform: translateX(100%);
   transition: transform 300ms ease-out;
 } */
-

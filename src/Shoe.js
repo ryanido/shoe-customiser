@@ -9,10 +9,6 @@ import { useGLTF } from '@react-three/drei'
 export function Model({shoe, setActive}) {
   const group = useRef()
   const { nodes, materials } = useGLTF('/shoe.gltf')
-  const handleClick = ({number}) =>
-  {
-    
-  }
 
   return (
     <group ref= {group} dispose={null} scale = {3}>
