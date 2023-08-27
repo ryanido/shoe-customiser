@@ -193,7 +193,7 @@ function App() {
 
   function handleArrowClick(direction) {
     if (direction === 'left') {
-      if (active == 0) setActive(8)
+      if (active == 0) setActive(parts.length - 1)
       else setActive(active - 1);
     } else if (direction === 'right') {
       if (active == parts.length - 1) setActive(0)
