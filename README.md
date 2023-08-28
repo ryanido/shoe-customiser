@@ -25,7 +25,7 @@ The Shoe Customization App is a web application built using React and Three.js t
 - **ColorButton**: The ColorButton component represents a color option button that users can click to change the color of a specific shoe part.
 
 - **MaterialButton**: The MaterialButton component represents a material selection button for certain shoe parts.
-- 
+  
 ## Getting Started
 
 To run the Shoe Customization App locally, follow these steps:
